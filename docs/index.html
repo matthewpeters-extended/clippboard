@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Paste: press a key, get your text</title>
-<meta name="description" content="Paste is a macOS menu bar app that types your saved text when you press a key combination, in any app. Local only. No network. No clipboard.">
+<meta name="description" content="Paste is a macOS menu bar app that types your saved text when you press a key combination, in any app. Local only. No clipboard. Online only to check for updates.">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://matthewpeters-extended.github.io/paste/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Paste: press a key, get your text">
+<meta property="og:description" content="A macOS menu bar app that types your saved text when you press a key combination, in any app.">
+<meta property="og:url" content="https://matthewpeters-extended.github.io/paste/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121214%27/%3E%3Crect x=%2714%27 y=%277%27 width=%274%27 height=%2718%27 rx=%272%27 fill=%27%23FF5A1F%27/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316151A'/%3E%3Crect x='30' y='14' width='6' height='36' rx='3' fill='%23FF5A1F'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -119,15 +128,21 @@
 
   .cta { padding-block: clamp(64px, 9vw, 112px); }
 
+  .steps { margin: 24px 0 16px; padding-left: 1.25rem; max-width: 62ch; display: grid; gap: 10px; color: var(--ink-soft); }
+  .steps strong { color: var(--ink); font-weight: 600; }
+  details { margin-top: 24px; max-width: 640px; }
+  summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+  summary:hover { color: var(--caret); }
   footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: .9375rem; color: var(--ink-soft); }
 
   @media (max-width: 820px) {
     .hero-top { grid-template-columns: 1fr; }
   }
   @media (max-width: 720px) {
-    .nav.links { display: none; }
+    .top { flex-wrap: wrap; row-gap: 4px; }
+    .nav.links { order: 3; width: 100%; gap: 22px; overflow-x: auto; white-space: nowrap; padding-bottom: 8px; }
     .nav { gap: 14px; }
-    .nav .plain { display: none; }
+    .nav.account .plain { display: none; }
     .three { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -150,7 +165,7 @@
     </nav>
     <nav class="nav account" aria-label="Account">
       <a class="plain" href="#">Sign in</a>
-      <a class="btn" href="#install"><svg class="apple" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Download <span class="hint" aria-hidden="true">D</span></a>
+      <a class="btn" href="https://github.com/matthewpeters-extended/paste/releases/latest"><svg class="apple" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Download <span class="hint" aria-hidden="true">D</span></a>
     </nav>
   </div>
 
@@ -159,7 +174,7 @@
       <div>
         <h1>Press a key.<br>Your text appears.</h1>
         <p class="lede">Save the text you type all the time. Press a key combination in any app and Paste types it for you.</p>
-        <a class="btn" href="#install">Get Paste for Mac</a>
+        <a class="btn" href="https://github.com/matthewpeters-extended/paste/releases/latest">Get Paste for Mac</a>
         <p class="sub">Free and open source · no account · macOS 26</p>
       </div>
       <div class="form" id="form" aria-hidden="true"></div>
@@ -183,7 +198,7 @@
   <section id="privacy">
     <h2>Your text stays on your Mac.</h2>
     <div class="three">
-      <div><h3>No network</h3><p>Paste never connects to the internet.</p></div>
+      <div><h3>Nothing leaves your Mac</h3><p>Paste only goes online to check GitHub for updates, and you can turn that off.</p></div>
       <div><h3>Clipboard untouched</h3><p>Text is typed as characters. What you copied is still there.</p></div>
       <div><h3>One permission</h3><p>Accessibility, so Paste can notice your key combination.</p></div>
     </div>
@@ -191,20 +206,28 @@
 
   <section id="install">
     <h2>Install</h2>
-    <p class="soft">Needs macOS 26 and the Swift toolchain (Command Line Tools are enough).</p>
+    <ol class="steps">
+      <li><strong>Download</strong> the latest <a href="https://github.com/matthewpeters-extended/paste/releases/latest">Paste release</a> (a .dmg) and open it.</li>
+      <li><strong>Drag Paste</strong> to Applications and open it. It is signed and notarized by Apple, so macOS opens it without a warning.</li>
+      <li><strong>Allow Accessibility</strong> when the Welcome window asks. This is the only permission Paste needs. It then walks you through adding your first Binding.</li>
+    </ol>
+    <p class="soft">Needs macOS 26. Paste checks GitHub for updates and installs them itself.</p>
+    <details>
+      <summary>Build it yourself</summary>
+      <p class="soft">Needs macOS 26 and the Swift toolchain (Command Line Tools are enough).</p>
 <pre>git clone https://github.com/matthewpeters-extended/paste.git
 cd paste
 ./setup-signing.sh
 ./build-app.sh
 cp -R build/Paste.app /Applications/
 open /Applications/Paste.app</pre>
-    <p class="soft">On first launch, a Welcome window walks you through the rest.</p>
+    </details>
   </section>
 
   <div class="cta">
     <h2>Stop retyping the same things.</h2>
     <p class="soft">Free to try. Runs locally. No account needed.</p>
-    <a class="btn" href="#install">Get Paste for Mac</a>
+    <a class="btn" href="https://github.com/matthewpeters-extended/paste/releases/latest">Get Paste for Mac</a>
   </div>
 </div>
 
@@ -215,7 +238,7 @@ open /Applications/Paste.app</pre>
 <script>
 (function () {
   document.addEventListener("keydown", function (ev) {
-    if (ev.key.toLowerCase() === "d" && !ev.metaKey && !ev.ctrlKey && !ev.altKey) { location.hash = "install"; }
+    if (ev.key.toLowerCase() === "d" && !ev.metaKey && !ev.ctrlKey && !ev.altKey) { location.href = "https://github.com/matthewpeters-extended/paste/releases/latest"; }
   });
   var examples = [
     { label: "Postal code", key: "P", text: "90210" },
