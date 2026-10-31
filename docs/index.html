@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paste: press a key, get your text</title>
+<meta name="description" content="Paste is a macOS menu bar app that types your saved text when you press a key combination, in any app. Local only. No network. No clipboard.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316151A'/%3E%3Crect x='30' y='14' width='6' height='36' rx='3' fill='%23FF5A1F'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --paper: #FFFBF7;
+    --surface: #FFFFFF;
+    --ink: #16151A;
+    --ink-soft: #5E5B66;
+    --line: #EADFD2;
+    --caret: #FF5A1F;
+    --keycap: #F4EBDD;
+    --keycap-edge: #D9CBB4;
+    --panel: #FFE2C2;
+    --panel-grid: rgba(22,21,26,.06);
+    --sans: -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #121214; --surface: #1B1B1F; --ink: #F2EFE8; --ink-soft: #A5A2AD;
+      --line: #2B2B31; --caret: #FF7A45; --keycap: #26262B; --keycap-edge: #0B0B0C;
+      --panel: #6A4B2E; --panel-grid: rgba(255,255,255,.08); color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #121214; --surface: #1B1B1F; --ink: #F2EFE8; --ink-soft: #A5A2AD;
+    --line: #2B2B31; --caret: #FF7A45; --keycap: #26262B; --keycap-edge: #0B0B0C;
+    --panel: #6A4B2E; --panel-grid: rgba(255,255,255,.08); color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 400 1rem/1.6 var(--sans); -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1152px; margin-inline: auto; padding-inline: 24px; }
+
+  /* top bar */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+  .brand { font-weight: 700; font-size: 1.125rem; letter-spacing: -.01em; text-decoration: none; display: inline-flex; align-items: center; }
+  .brand i { display: inline-block; width: 3px; height: 1em; background: var(--caret); margin-left: 4px; border-radius: 2px; }
+  .nav { display: flex; align-items: center; gap: 24px; font-size: .9375rem; }
+  .nav.links { gap: 28px; }
+  .nav .oss { display: inline-flex; align-items: center; gap: 7px; }
+  .nav a { text-decoration: none; }
+  .nav .plain { color: var(--ink); }
+  .nav .plain:hover { color: var(--caret); }
+  .nav .oss { color: var(--caret); font-weight: 600; }
+  .nav .oss:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .nav .btn { padding: 8px 14px; font-size: .875rem; }
+  .btn .hint { display: inline-grid; place-items: center; min-width: 1.6em; height: 1.6em; border-radius: 6px; font: 600 .75rem/1 var(--mono); background: color-mix(in srgb, var(--paper) 18%, transparent); }
+
+  /* type */
+  h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.1; letter-spacing: -.025em; font-weight: 500; margin: 0 0 16px; max-width: 16ch; text-wrap: balance; }
+  h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; letter-spacing: -.02em; font-weight: 500; margin: 0 0 12px; }
+  p { margin: 0 0 16px; }
+  .lede { font-size: 1.125rem; color: var(--ink-soft); max-width: 40ch; }
+  .soft { color: var(--ink-soft); }
+  .sub { font-size: .875rem; color: var(--ink-soft); margin-top: 12px; margin-bottom: 0; }
+  .caret-bar { display: inline-block; width: 2px; height: 1.05em; background: var(--caret); vertical-align: text-bottom; margin-left: 2px; border-radius: 2px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* pill button, inverted like the reference */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: .9375rem; text-decoration: none; background: var(--ink); color: var(--paper); }
+  .btn:hover { opacity: .88; }
+
+  /* keycaps */
+  .key { display: inline-flex; align-items: center; justify-content: center; min-width: 2em; height: 2em; padding: 0 .5em; font: 600 .85em/1 var(--mono); background: var(--keycap); border: 1px solid var(--keycap-edge); border-bottom-width: 3px; border-radius: 8px; transition: transform .08s, border-bottom-width .08s, background .15s, color .15s; }
+  .key.down { transform: translateY(2px); border-bottom-width: 1px; background: var(--caret); color: var(--paper); border-color: transparent; }
+  .keys { display: inline-flex; gap: 6px; }
+
+  /* demo panel */
+  .hero { padding-block: clamp(8px, 2vw, 24px) 0; }
+  .panel { margin-top: 24px; padding: clamp(12px, 2vw, 24px); border-radius: 24px; background-color: var(--panel); background-image: linear-gradient(var(--panel-grid) 1px, transparent 1px), linear-gradient(90deg, var(--panel-grid) 1px, transparent 1px); background-size: 32px 32px; }
+  .hero-top { display: grid; grid-template-columns: 1fr minmax(0, 480px); gap: clamp(24px, 5vw, 64px); align-items: center; }
+  section, .panel { scroll-margin-top: 16px; }
+  .hero-top h1 { max-width: none; }
+  .form { width: 100%; display: grid; grid-template-columns: 1fr; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+  .fld { display: grid; grid-template-columns: 104px 1fr; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--paper); transition: border-color .15s, box-shadow .15s; min-width: 0; }
+  .fld.active { border-color: var(--caret); box-shadow: 0 0 0 3px color-mix(in srgb, var(--caret) 22%, transparent); }
+  .fld-label { font: 600 .6875rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .fld-text { min-height: 1.5em; font-size: 1.125rem; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+  .fld .caret-bar { display: none; margin-left: 1px; }
+  .fld.active .caret-bar { display: inline-block; width: 3px; height: 1.25em; vertical-align: text-bottom; }
+
+  .kb { --kh: clamp(24px, 3.3vw, 42px); --g: 2.5px; width: 100%; max-width: 800px; margin-inline: auto; display: grid; gap: 5px; padding: 12px; background: #2A2A2F; border: 1.5px solid color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 18px; }
+  .kb-row { display: grid; grid-template-columns: repeat(60, minmax(0, 1fr)); }
+  .kb-key { grid-column: span var(--n, 4); margin: 0 var(--g); height: var(--kh); min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 8%; font: 500 clamp(.65rem, 1.5vw, 1rem)/1 var(--sans); color: #D3D1D8; background: #131317; border: 1px solid #050506; border-bottom-width: 2px; border-radius: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); transition: background .25s, color .25s, transform .15s, box-shadow .3s; }
+  .kb-key.f { height: calc(var(--kh) * .62); font-size: clamp(.35rem, .85vw, .6rem); color: #A9A7B0; }
+  .kb-key.pair { gap: 3px; font-size: clamp(.45rem, 1.05vw, .72rem); }
+  .kb-key.mod { justify-content: space-between; padding-block: 12% 10%; font-size: clamp(.34rem, .8vw, .58rem); color: #A9A7B0; }
+  .kb-key.mod .sym { font-size: clamp(.5rem, 1.15vw, .8rem); }
+  .kb-key.al-l { align-items: flex-start; }
+  .kb-key.al-r { align-items: flex-end; }
+  .kb-key.tid::after { content: ""; width: 38%; aspect-ratio: 1; border-radius: 50%; border: 1px solid #55535c; }
+  .kb-arrows { grid-column: span 12; display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; }
+  .kb-key i { font-style: normal; }
+  .kb-arrows .kb-key { grid-column: auto; height: calc(var(--kh) / 2 - 1px); font-size: clamp(.4rem, .9vw, .65rem); }
+  .kb-arrows .col { display: grid; gap: 2px; margin: 0 var(--g); }
+  .kb-arrows .col .kb-key { margin: 0; }
+  .kb-key.lit { background: var(--caret); color: #1B0E06; border-color: transparent; transform: translateY(1px); box-shadow: 0 0 24px color-mix(in srgb, var(--caret) 60%, transparent); }
+
+  /* sections */
+  section { padding-block: clamp(56px, 8vw, 96px) 0; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 32px; }
+  .three h3 { font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
+  .three p { color: var(--ink-soft); margin: 0; }
+
+  pre { margin: 24px 0 16px; padding: 20px 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow-x: auto; font: 500 .875rem/1.7 var(--mono); max-width: 640px; }
+
+  .cta { padding-block: clamp(64px, 9vw, 112px); }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: .9375rem; color: var(--ink-soft); }
+
+  @media (max-width: 820px) {
+    .hero-top { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .nav.links { display: none; }
+    .nav { gap: 14px; }
+    .nav .plain { display: none; }
+    .three { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .caret-bar { animation: none; }
+    .key { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="#">Paste<i aria-hidden="true"></i></a>
+    <nav class="nav links" aria-label="Sections">
+      <a class="plain" href="#how">How it works</a>
+      <a class="plain" href="who-its-for.html">Who it's for</a>
+      <a class="plain" href="#privacy">Privacy</a>
+      <a class="plain" href="#install">Install</a>
+      <a class="oss" href="https://github.com/matthewpeters-extended/paste"><svg class="gh" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.5 24 5.87 18.627.5 12 .5z"/></svg>Open Source</a>
+    </nav>
+    <nav class="nav account" aria-label="Account">
+      <a class="plain" href="#">Sign in</a>
+      <a class="btn" href="#install"><svg class="apple" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Download <span class="hint" aria-hidden="true">D</span></a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Press a key.<br>Your text appears.</h1>
+        <p class="lede">Save the text you type all the time. Press a key combination in any app and Paste types it for you.</p>
+        <a class="btn" href="#install">Get Paste for Mac</a>
+        <p class="sub">Free and open source · no account · macOS 26</p>
+      </div>
+      <div class="form" id="form" aria-hidden="true"></div>
+    </div>
+
+    <div class="panel" id="how" aria-label="Demo: pressing a key combination types saved text into a field">
+      <div class="kb" id="kb" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <section id="who">
+    <h2>Made for text you type over and over.</h2>
+    <div class="three">
+      <div><h3>Forms</h3><p>Postal codes, phone numbers and addresses, one key combination each.</p></div>
+      <div><h3>Applications</h3><p>Your email, LinkedIn and portfolio links, without digging them up again.</p></div>
+      <div><h3>Replies</h3><p>The sentence you send every day, ready in any app.</p></div>
+    </div>
+    <p style="margin-top:24px"><a href="who-its-for.html">See who Paste is for &rarr;</a></p>
+  </section>
+
+  <section id="privacy">
+    <h2>Your text stays on your Mac.</h2>
+    <div class="three">
+      <div><h3>No network</h3><p>Paste never connects to the internet.</p></div>
+      <div><h3>Clipboard untouched</h3><p>Text is typed as characters. What you copied is still there.</p></div>
+      <div><h3>One permission</h3><p>Accessibility, so Paste can notice your key combination.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>Install</h2>
+    <p class="soft">Needs macOS 26 and the Swift toolchain (Command Line Tools are enough).</p>
+<pre>git clone https://github.com/matthewpeters-extended/paste.git
+cd paste
+./setup-signing.sh
+./build-app.sh
+cp -R build/Paste.app /Applications/
+open /Applications/Paste.app</pre>
+    <p class="soft">On first launch, a Welcome window walks you through the rest.</p>
+  </section>
+
+  <div class="cta">
+    <h2>Stop retyping the same things.</h2>
+    <p class="soft">Free to try. Runs locally. No account needed.</p>
+    <a class="btn" href="#install">Get Paste for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">Free and open source · <a href="https://github.com/matthewpeters-extended/paste">GitHub</a></div>
+</footer>
+
+<script>
+(function () {
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key.toLowerCase() === "d" && !ev.metaKey && !ev.ctrlKey && !ev.altKey) { location.hash = "install"; }
+  });
+  var examples = [
+    { label: "Postal code", key: "P", text: "90210" },
+    { label: "Email", key: "E", text: "me@example.com" },
+    { label: "LinkedIn", key: "L", text: "linkedin.com/in/you" },
+    { label: "Phone", key: "T", text: "555-0123" }
+  ];
+  var kb = document.getElementById("kb");
+  var form = document.getElementById("form");
+  var letters = {}, shift, cmd;
+
+  // n is the key's width in quarter-units of a 15-unit row (60 total).
+  function ch(c) { return { c: c, n: 4 }; }
+  function chars(str) { return str.split("").map(ch); }
+  function pair(t, b) { return { t: t, c: b, n: 4, pair: true }; }
+  function mod(word, sym, n, al, id) { return { c: word, sym: sym, n: n, mod: true, al: al, id: id }; }
+  var fnKeys = [{ c: "esc", n: 6, f: true, al: "l" }];
+  for (var i = 1; i <= 12; i++) fnKeys.push({ c: "F" + i, n: 4, f: true });
+  fnKeys.push({ n: 6, f: true, tid: true });
+
+  var rows = [
+    fnKeys,
+    "~` !1 @2 #3 $4 %5 ^6 &7 *8 (9 )0 _- +=".split(" ").map(function (p) { return pair(p[0], p[1]); })
+      .concat([mod("delete", "", 8, "r")]),
+    [mod("tab", "", 6, "l")].concat(chars("QWERTYUIOP[]")).concat([{ c: "\\", n: 6 }]),
+    [mod("caps lock", "", 7, "l")].concat(chars("ASDFGHJKL;'")).concat([mod("return", "", 9, "r")]),
+    [mod("shift", "", 9, "l", "shift")].concat(chars("ZXCVBNM,./")).concat([mod("shift", "", 11, "r")]),
+    [mod("fn", "", 4, "l"), mod("control", "\u2303", 4), mod("option", "\u2325", 4), mod("command", "\u2318", 5, "", "cmd"),
+     { c: "", n: 22 },
+     mod("command", "\u2318", 5), mod("option", "\u2325", 4), { arrows: true }]
+  ];
+
+  function build(spec) {
+    var key = document.createElement("span");
+    key.className = "kb-key";
+    key.style.setProperty("--n", spec.n);
+    if (spec.f) key.classList.add("f");
+    if (spec.tid) key.classList.add("tid");
+    if (spec.al) key.classList.add("al-" + spec.al);
+    if (spec.pair) {
+      key.classList.add("pair");
+      key.innerHTML = "<i></i><i></i>";
+      key.children[0].textContent = spec.t; key.children[1].textContent = spec.c;
+    } else if (spec.mod) {
+      key.classList.add("mod");
+      if (spec.sym) { key.innerHTML = '<i class="sym"></i><i></i>'; key.children[0].textContent = spec.sym; key.children[1].textContent = spec.c; }
+      else key.textContent = spec.c;
+      if (spec.id === "shift") shift = key;
+      if (spec.id === "cmd") cmd = key;
+    } else {
+      key.textContent = spec.c || "";
+      if (/^[A-Z]$/.test(spec.c || "")) letters[spec.c] = key;
+    }
+    return key;
+  }
+
+  rows.forEach(function (r) {
+    var el = document.createElement("div");
+    el.className = "kb-row";
+    r.forEach(function (spec) {
+      if (spec.arrows) {
+        var wrap = document.createElement("div");
+        wrap.className = "kb-arrows";
+        var l = build({ c: "\u25C0", n: 4 });
+        var col = document.createElement("div"); col.className = "col";
+        col.appendChild(build({ c: "\u25B2", n: 4 })); col.appendChild(build({ c: "\u25BC", n: 4 }));
+        var rt = build({ c: "\u25B6", n: 4 });
+        wrap.appendChild(l); wrap.appendChild(col); wrap.appendChild(rt);
+        el.appendChild(wrap);
+      } else el.appendChild(build(spec));
+    });
+    kb.appendChild(el);
+  });
+
+  var fields = examples.map(function (e) {
+    var f = document.createElement("div");
+    f.className = "fld";
+    f.innerHTML = '<div class="fld-label"></div><div class="fld-text"><span></span><span class="caret-bar" aria-hidden="true"></span></div>';
+    f.firstChild.textContent = e.label;
+    form.appendChild(f);
+    return { box: f, out: f.querySelector(".fld-text span") };
+  });
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    examples.forEach(function (e, i) { fields[i].out.textContent = e.text; });
+    [shift, cmd, letters.P].forEach(function (k) { k.classList.add("lit"); });
+    return;
+  }
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  async function loop() {
+    while (true) {
+      fields.forEach(function (f) { f.out.textContent = ""; f.box.classList.remove("active"); });
+      await sleep(1400);
+      for (var i = 0; i < examples.length; i++) {
+        var e = examples[i], f = fields[i], k = letters[e.key];
+        f.box.classList.add("active");
+        await sleep(900);
+        cmd.classList.add("lit"); shift.classList.add("lit");
+        await sleep(350);
+        k.classList.add("lit");
+        await sleep(450);
+        f.out.textContent = e.text;
+        await sleep(600);
+        [cmd, shift, k].forEach(function (x) { x.classList.remove("lit"); });
+        f.box.classList.remove("active");
+        await sleep(900);
+      }
+      await sleep(4500);
+    }
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
