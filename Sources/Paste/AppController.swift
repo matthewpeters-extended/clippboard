@@ -6,6 +6,7 @@ final class AppController {
     let model = BindingsModel()
     let permission = PermissionMonitor()
     let launchAtLogin = LaunchAtLogin()
+    let updates = Updates()
     let listener: KeyPressListener
 
     init() {

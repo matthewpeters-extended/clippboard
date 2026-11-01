@@ -17,7 +17,7 @@ struct OnboardingView: View {
             }
 
             SettingsGroup("1. Allow Accessibility",
-                          footer: "macOS requires this so Paste can notice your key combinations in other apps and type for you. It's the only permission Paste needs. Paste never uses the network and never touches your clipboard. In the list, turn on Paste. If it isn't listed, click + and choose Paste.") {
+                          footer: "macOS requires this so Paste can notice your key combinations in other apps and type for you. It's the only permission Paste needs. Paste only goes online to check GitHub for updates (you can turn that off in Settings), and never touches your clipboard. In the list, turn on Paste. If it isn't listed, click + and choose Paste.") {
                 SettingsRow("Accessibility", detail: permission.isGranted ? "Allowed. You're set." : "Not allowed yet.") {
                     if permission.isGranted {
                         Label("Allowed", systemImage: "checkmark.circle.fill").foregroundStyle(.green)

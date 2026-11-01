@@ -13,7 +13,7 @@ struct PasteApp: App {
         .menuBarExtraStyle(.window)
 
         Window("Paste Settings", id: "settings") {
-            SettingsView(model: controller.model, permission: controller.permission, listener: controller.listener, launchAtLogin: controller.launchAtLogin)
+            SettingsView(model: controller.model, permission: controller.permission, listener: controller.listener, launchAtLogin: controller.launchAtLogin, updates: controller.updates)
         }
         .windowResizability(.contentMinSize)
         .defaultLaunchBehavior(.suppressed)

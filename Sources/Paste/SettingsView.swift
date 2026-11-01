@@ -21,6 +21,7 @@ struct SettingsView: View {
     let permission: PermissionMonitor
     let listener: KeyPressListener
     let launchAtLogin: LaunchAtLogin
+    let updates: Updates
     @State private var page: SettingsPage? = .bindings
 
     var body: some View {
@@ -79,6 +80,13 @@ struct SettingsView: View {
     }
 
     private var generalPage: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            startupGroup
+            updatesGroup
+        }
+    }
+
+    private var startupGroup: some View {
         SettingsGroup("Startup") {
             SettingsRow("Launch Paste at login", detail: "Start Paste automatically when you log in, so your Bindings always work.") {
                 Toggle("Launch Paste at login", isOn: Binding(get: { launchAtLogin.isEnabled }, set: { launchAtLogin.setEnabled($0) }))
@@ -86,6 +94,18 @@ struct SettingsView: View {
             }
             if let error = launchAtLogin.error {
                 Text(error).foregroundStyle(.red).font(.caption).padding(14)
+            }
+        }
+    }
+
+    private var updatesGroup: some View {
+        SettingsGroup("Updates", footer: "Paste asks GitHub if a newer version exists. It sends no Bindings or personal data.") {
+            SettingsRow("Check for updates automatically", detail: "Looks for a new version of Paste once a day.") {
+                Toggle("Check for updates automatically", isOn: Bindable(updates).checksAutomatically)
+                    .labelsHidden().toggleStyle(.switch)
+            }
+            SettingsRow("Check now") {
+                Button("Check for Updates") { updates.checkNow() }
             }
         }
     }
@@ -102,8 +122,8 @@ struct SettingsView: View {
                 }
             }
             SettingsGroup("Your data") {
-                SettingsRow("Network", detail: "Paste never connects to the internet.") {
-                    Text("Never").foregroundStyle(.secondary)
+                SettingsRow("Network", detail: "Only to check GitHub for updates. Your Bindings never leave this Mac.") {
+                    Text(updates.checksAutomatically ? "Update checks" : "Off").foregroundStyle(.secondary)
                 }
                 SettingsRow("Saved in", detail: model.fileURL.path(percentEncoded: false)) { EmptyView() }
             }
