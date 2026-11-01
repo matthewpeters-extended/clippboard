@@ -65,7 +65,8 @@
   .nav .plain:hover { color: var(--caret); }
   .nav .oss { color: var(--caret); font-weight: 600; }
   .nav .oss:hover { text-decoration: underline; text-underline-offset: 4px; }
-  .nav .btn { padding: 8px 14px; font-size: .875rem; }
+  .nav .btn { padding: 8px 14px; font-size: .875rem; white-space: nowrap; }
+  .nav.account { flex-shrink: 0; }
   .btn .hint { display: inline-grid; place-items: center; min-width: 1.6em; height: 1.6em; border-radius: 6px; font: 600 .75rem/1 var(--mono); background: color-mix(in srgb, var(--paper) 18%, transparent); }
 
   /* type */
@@ -138,9 +139,11 @@
   @media (max-width: 820px) {
     .hero-top { grid-template-columns: 1fr; }
   }
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     .top { flex-wrap: wrap; row-gap: 4px; }
     .nav.links { order: 3; width: 100%; gap: 22px; overflow-x: auto; white-space: nowrap; padding-bottom: 8px; }
+  }
+  @media (max-width: 720px) {
     .nav { gap: 14px; }
     .nav.account .plain { display: none; }
     .three { grid-template-columns: 1fr; }
