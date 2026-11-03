@@ -8,7 +8,7 @@ Download `Clippboard-<version>.dmg` from the [latest release](https://github.com
 
 ## Website
 
-The landing site is plain HTML in `docs/` (no build step). Live at <https://matthewpeters-extended.github.io/clippboard/> once GitHub Pages is on: repo **Settings → Pages → Build and deployment → Deploy from a branch → `main` / `/docs`**. Download buttons point at the latest GitHub release.
+The landing site is plain HTML in `docs/` (no build step). Live at <https://clippboard.app/>, hosted on Vercel with the project's Root Directory set to `docs`. Every push to `main` that changes `docs/` redeploys it. Download buttons point at the latest GitHub release.
 
 ## Build from source
 
