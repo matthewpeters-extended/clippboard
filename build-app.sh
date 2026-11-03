@@ -26,7 +26,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleVersion</key><string>$VERSION</string>
     <key>LSMinimumSystemVersion</key><string>26.0</string>
     <key>LSUIElement</key><true/>
-    <key>SUFeedURL</key><string>https://github.com/matthewpeters-extended/paste/releases/latest/download/appcast.xml</string>
+    <key>SUFeedURL</key><string>https://github.com/matthewpeters-extended/clippboard/releases/latest/download/appcast.xml</string>
     <key>SUPublicEDKey</key><string>x84bQ4RZf4xKKVUWdYNJn0P6y6WlcIE06V6gQDnJ3VY=</string>
     <key>SUEnableAutomaticChecks</key><true/>
 </dict>

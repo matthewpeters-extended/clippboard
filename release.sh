@@ -54,6 +54,6 @@ spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG
 
 # The update feed Sparkle reads. It is signed with the private key that Sparkle's generate_keys put in your Keychain.
 .build/artifacts/sparkle/Sparkle/bin/generate_appcast \
-    --download-url-prefix "https://github.com/matthewpeters-extended/paste/releases/download/v$VERSION/" "$DIST"
+    --download-url-prefix "https://github.com/matthewpeters-extended/clippboard/releases/download/v$VERSION/" "$DIST"
 echo "Ready: $DMG and $DIST/appcast.xml"
 echo "Publish both with:  gh release create v$VERSION $DMG $DIST/appcast.xml --title \"Clippboard $VERSION\""

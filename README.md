@@ -4,18 +4,18 @@ A macOS menu bar app that types your saved text when you press a key combination
 
 ## Install
 
-Download `Clippboard-<version>.dmg` from the [latest release](https://github.com/matthewpeters-extended/paste/releases/latest), open it and drag Clippboard to Applications. Clippboard then updates itself. The Welcome window walks you through the Accessibility permission and Launch at login.
+Download `Clippboard-<version>.dmg` from the [latest release](https://github.com/matthewpeters-extended/clippboard/releases/latest), open it and drag Clippboard to Applications. Clippboard then updates itself. The Welcome window walks you through the Accessibility permission and Launch at login.
 
 ## Website
 
-The landing site is plain HTML in `docs/` (no build step). Live at <https://matthewpeters-extended.github.io/paste/> once GitHub Pages is on: repo **Settings → Pages → Build and deployment → Deploy from a branch → `main` / `/docs`**. Download buttons point at the latest GitHub release.
+The landing site is plain HTML in `docs/` (no build step). Live at <https://matthewpeters-extended.github.io/clippboard/> once GitHub Pages is on: repo **Settings → Pages → Build and deployment → Deploy from a branch → `main` / `/docs`**. Download buttons point at the latest GitHub release.
 
 ## Build from source
 
 Needs macOS 26 and the Swift toolchain (Command Line Tools are enough).
 
 ```sh
-git clone https://github.com/matthewpeters-extended/paste.git && cd paste
+git clone https://github.com/matthewpeters-extended/clippboard.git && cd clippboard
 ./setup-signing.sh               # once: a local signing certificate, so the Accessibility permission survives rebuilds
 ./build-app.sh                   # builds build/Clippboard.app
 cp -R build/Clippboard.app /Applications/
