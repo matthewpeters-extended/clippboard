@@ -6,7 +6,7 @@ struct PermissionNotice: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Paste needs Accessibility permission, so your Bindings won't fire yet.", systemImage: "exclamationmark.triangle.fill")
+            Label("Clippboard needs Accessibility permission, so your Bindings won't fire yet.", systemImage: "exclamationmark.triangle.fill")
                 .font(.caption).foregroundStyle(.orange)
             Button("Open Accessibility Settings") { permission.requestAndOpenSettings() }
                 .controlSize(.small)
@@ -17,10 +17,10 @@ struct PermissionNotice: View {
     }
 }
 
-/// Shown when Accessibility is allowed but Paste still couldn't start listening for keys. Paste keeps retrying.
+/// Shown when Accessibility is allowed but Clippboard still couldn't start listening for keys. Clippboard keeps retrying.
 struct ListenerProblemNotice: View {
     var body: some View {
-        Label("Paste can't listen for keys right now, so your Bindings won't fire. It keeps retrying. If this stays, remove Paste from the Accessibility list, add it again and reopen Paste.", systemImage: "exclamationmark.triangle.fill")
+        Label("Clippboard can't listen for keys right now, so your Bindings won't fire. It keeps retrying. If this stays, remove Clippboard from the Accessibility list, add it again and reopen Clippboard.", systemImage: "exclamationmark.triangle.fill")
             .font(.caption).foregroundStyle(.orange)
             .padding(8)
             .frame(maxWidth: .infinity, alignment: .leading)

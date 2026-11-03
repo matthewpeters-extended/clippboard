@@ -1,10 +1,10 @@
-import PasteCore
+import ClippboardCore
 import SwiftUI
 
 /// The Bindings list and the add/edit form. Shared by the popover and the Settings window.
 struct BindingsSection: View {
     let model: BindingsModel
-    @State private var editing: PasteCore.Binding?
+    @State private var editing: ClippboardCore.Binding?
     @State private var isAdding = false
     @State private var actionError: String?
 
@@ -41,7 +41,7 @@ struct BindingsSection: View {
         }
     }
 
-    private func row(_ binding: PasteCore.Binding) -> some View {
+    private func row(_ binding: ClippboardCore.Binding) -> some View {
         HStack {
             Toggle("On", isOn: Binding(get: { binding.isEnabled }, set: { on in
                 var changed = binding

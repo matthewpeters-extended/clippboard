@@ -1,7 +1,7 @@
 import Observation
 import Sparkle
 
-/// Checks GitHub for a newer Paste. The only network use in the app, and it never sends Bindings or personal data.
+/// Checks GitHub for a newer Clippboard. The only network use in the app, and it never sends Bindings or personal data.
 @MainActor
 @Observable
 final class Updates {

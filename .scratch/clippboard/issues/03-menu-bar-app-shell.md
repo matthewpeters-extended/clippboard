@@ -1,6 +1,6 @@
 # 03: Menu bar app shell
 
-**What to build:** a build script produces a real Paste `.app` from a Swift Package. Launching it shows an icon in the menu bar with no Dock icon. Clicking the icon opens a small popover just below it, with a Quit option. The popover uses `ConcentricRectangle` for matching corners and targets macOS 26.
+**What to build:** a build script produces a real Clippboard `.app` from a Swift Package. Launching it shows an icon in the menu bar with no Dock icon. Clicking the icon opens a small popover just below it, with a Quit option. The popover uses `ConcentricRectangle` for matching corners and targets macOS 26.
 
 **Blocked by:** None (can start immediately).
 

@@ -1,4 +1,4 @@
-# Paste: spec
+# Clippboard: spec
 
 Status: implemented
 
@@ -8,11 +8,11 @@ I type the same pieces of text over and over: a postal code, a LinkedIn URL, an 
 
 ## Solution
 
-Paste is a macOS menu bar app. Clicking its icon opens a small popover just below the icon. In the popover I manage my **Bindings**: each links a **Combo** to some plain **Text**. When I press a Combo in any app, Paste types the Text. A **Pause** switch turns every Binding off at once so my keys behave normally. Everything is stored locally on my Mac and the app never touches the network.
+Clippboard is a macOS menu bar app. Clicking its icon opens a small popover just below the icon. In the popover I manage my **Bindings**: each links a **Combo** to some plain **Text**. When I press a Combo in any app, Clippboard types the Text. A **Pause** switch turns every Binding off at once so my keys behave normally. Everything is stored locally on my Mac and the app never touches the network.
 
 ## User Stories
 
-1. As a user, I want a Paste icon in the menu bar, so that I can reach it without a Dock icon or window.
+1. As a user, I want a Clippboard icon in the menu bar, so that I can reach it without a Dock icon or window.
 2. As a user, I want clicking the icon to open a small popover just below it, so that managing Bindings feels lightweight.
 3. As a user, I want to add a Binding with a label, a Combo and some Text, so that I can link a key combination to text I use often.
 4. As a user, I want to set a Combo by pressing the keys I want, so that I don't have to type it out or make typos.
@@ -31,17 +31,17 @@ Paste is a macOS menu bar app. Clicking its icon opens a small popover just belo
 17. As a user, I want my Bindings to survive quitting and restarting the app, so that I only set them up once.
 18. As a user, I want my Bindings kept only in a local file, so that nothing I enter is ever sent over the network.
 19. As a user, I want the app to make no network connections at all, so that I can trust it with private text.
-20. As a user, I want a first-run screen that explains the macOS permission Paste needs and links me to the right System Settings pane, so that setup is not confusing.
+20. As a user, I want a first-run screen that explains the macOS permission Clippboard needs and links me to the right System Settings pane, so that setup is not confusing.
 21. As a user, I want to see clearly when the permission is missing, so that I understand why Bindings aren't firing.
-22. As a user, I want Paste to launch at login, so that my Bindings always work.
-23. As a user, I want no Dock icon, so that Paste stays out of the way.
-24. As a user, I want Paste not to fire in macOS password fields, so that it can't type into places it shouldn't.
+22. As a user, I want Clippboard to launch at login, so that my Bindings always work.
+23. As a user, I want no Dock icon, so that Clippboard stays out of the way.
+24. As a user, I want Clippboard not to fire in macOS password fields, so that it can't type into places it shouldn't.
 25. As a user, I want a Quit option in the popover, so that I can close the app.
 26. As a user, I want the popover to use matching rounded corners at every nesting level, so that it looks native on macOS 26.
 
 ## Implementation Decisions
 
-- Paste is a native Swift/SwiftUI app using `MenuBarExtra`, targeting macOS 26 so the popover can use `ConcentricRectangle` for matching corners.
+- Clippboard is a native Swift/SwiftUI app using `MenuBarExtra`, targeting macOS 26 so the popover can use `ConcentricRectangle` for matching corners.
 - A **core module** has no macOS code in it. It owns the set of Bindings and the Pause state.
   - Given a pressed Combo, it returns the Text to type, or nothing.
   - It rejects duplicate Combos.

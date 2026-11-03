@@ -1,4 +1,4 @@
-import PasteCore
+import ClippboardCore
 import SwiftUI
 
 enum SettingsPage: String, CaseIterable, Identifiable {
@@ -88,8 +88,8 @@ struct SettingsView: View {
 
     private var startupGroup: some View {
         SettingsGroup("Startup") {
-            SettingsRow("Launch Paste at login", detail: "Start Paste automatically when you log in, so your Bindings always work.") {
-                Toggle("Launch Paste at login", isOn: Binding(get: { launchAtLogin.isEnabled }, set: { launchAtLogin.setEnabled($0) }))
+            SettingsRow("Launch Clippboard at login", detail: "Start Clippboard automatically when you log in, so your Bindings always work.") {
+                Toggle("Launch Clippboard at login", isOn: Binding(get: { launchAtLogin.isEnabled }, set: { launchAtLogin.setEnabled($0) }))
                     .labelsHidden().toggleStyle(.switch)
             }
             if let error = launchAtLogin.error {
@@ -99,8 +99,8 @@ struct SettingsView: View {
     }
 
     private var updatesGroup: some View {
-        SettingsGroup("Updates", footer: "Paste asks GitHub if a newer version exists. It sends no Bindings or personal data.") {
-            SettingsRow("Check for updates automatically", detail: "Looks for a new version of Paste once a day.") {
+        SettingsGroup("Updates", footer: "Clippboard asks GitHub if a newer version exists. It sends no Bindings or personal data.") {
+            SettingsRow("Check for updates automatically", detail: "Looks for a new version of Clippboard once a day.") {
                 Toggle("Check for updates automatically", isOn: Bindable(updates).checksAutomatically)
                     .labelsHidden().toggleStyle(.switch)
             }
@@ -112,7 +112,7 @@ struct SettingsView: View {
 
     private var privacyPage: some View {
         VStack(alignment: .leading, spacing: 24) {
-            SettingsGroup("Permission", footer: "macOS needs this so Paste can notice your key combinations in other apps and type for you.") {
+            SettingsGroup("Permission", footer: "macOS needs this so Clippboard can notice your key combinations in other apps and type for you.") {
                 SettingsRow("Accessibility", detail: permission.isGranted ? "Allowed" : "Not allowed. Your Bindings won't fire yet.") {
                     if permission.isGranted {
                         Label("Allowed", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
@@ -132,7 +132,7 @@ struct SettingsView: View {
 
     private var accountPage: some View {
         VStack(alignment: .leading, spacing: 24) {
-            SettingsGroup("This Mac", footer: "Paste has no online account. Everything stays on this Mac.") {
+            SettingsGroup("This Mac", footer: "Clippboard has no online account. Everything stays on this Mac.") {
                 SettingsRow("Mac user") { Text(NSFullUserName()).foregroundStyle(.secondary) }
                 SettingsRow("Version") {
                     Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev")
@@ -141,8 +141,8 @@ struct SettingsView: View {
                 SettingsRow("Bindings") { Text("\(model.all.count) saved").foregroundStyle(.secondary) }
             }
             SettingsGroup("Session") {
-                SettingsRow("Quit Paste", detail: "Stops Paste. Your Bindings stop working until you open it again.") {
-                    Button("Quit Paste", role: .destructive) { NSApplication.shared.terminate(nil) }
+                SettingsRow("Quit Clippboard", detail: "Stops Clippboard. Your Bindings stop working until you open it again.") {
+                    Button("Quit Clippboard", role: .destructive) { NSApplication.shared.terminate(nil) }
                 }
             }
         }

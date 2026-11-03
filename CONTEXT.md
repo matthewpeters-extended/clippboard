@@ -1,4 +1,4 @@
-# Paste
+# Clippboard
 
 A macOS menu bar app that lets a person attach their own text to a key combination, so pressing that combination types the text for them.
 

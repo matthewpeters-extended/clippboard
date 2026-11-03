@@ -2,7 +2,7 @@ import ApplicationServices
 import AppKit
 import Observation
 
-/// Tracks whether macOS has granted Paste the Accessibility permission it needs to see and swallow key presses.
+/// Tracks whether macOS has granted Clippboard the Accessibility permission it needs to see and swallow key presses.
 @MainActor
 @Observable
 final class PermissionMonitor {
@@ -24,7 +24,7 @@ final class PermissionMonitor {
         onTick?(granted)
     }
 
-    /// Adds Paste to the Accessibility list (so it can be ticked) and opens that Settings pane.
+    /// Adds Clippboard to the Accessibility list (so it can be ticked) and opens that Settings pane.
     func requestAndOpenSettings() {
         let promptKey = "AXTrustedCheckOptionPrompt" as CFString
         _ = AXIsProcessTrustedWithOptions([promptKey: true] as CFDictionary)

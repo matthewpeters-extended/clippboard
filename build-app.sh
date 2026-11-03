@@ -1,26 +1,26 @@
 #!/bin/sh
-# Builds Paste and bundles it as build/Paste.app (Command Line Tools only, no Xcode).
+# Builds Clippboard and bundles it as build/Clippboard.app (Command Line Tools only, no Xcode).
 set -e
 cd "$(dirname "$0")"
 VERSION=$(tr -d '[:space:]' < VERSION)
 swift build -c release
-APP=build/Paste.app
+APP=build/Clippboard.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
-cp "$(swift build -c release --show-bin-path)/Paste" "$APP/Contents/MacOS/Paste"
-# Sparkle (the updater) ships as a framework inside the app. Paste isn't sandboxed, so its XPC helpers aren't needed.
+cp "$(swift build -c release --show-bin-path)/Clippboard" "$APP/Contents/MacOS/Clippboard"
+# Sparkle (the updater) ships as a framework inside the app. Clippboard isn't sandboxed, so its XPC helpers aren't needed.
 mkdir -p "$APP/Contents/Frameworks"
 ditto .build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework "$APP/Contents/Frameworks/Sparkle.framework"
 rm -rf "$APP/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices" "$APP/Contents/Frameworks/Sparkle.framework/XPCServices"
-install_name_tool -add_rpath @executable_path/../Frameworks "$APP/Contents/MacOS/Paste"
+install_name_tool -add_rpath @executable_path/../Frameworks "$APP/Contents/MacOS/Clippboard"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key><string>com.matthew.paste</string>
-    <key>CFBundleName</key><string>Paste</string>
-    <key>CFBundleExecutable</key><string>Paste</string>
+    <key>CFBundleName</key><string>Clippboard</string>
+    <key>CFBundleExecutable</key><string>Clippboard</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$VERSION</string>
@@ -38,10 +38,10 @@ PLIST
 ENTITLEMENTS=
 if [ -n "$SIGN_IDENTITY" ]; then
     IDENTITY="$SIGN_IDENTITY"; STAMP=--timestamp
-elif security find-identity -p codesigning | grep -q "Paste Local Signing"; then
-    IDENTITY="Paste Local Signing"; STAMP=
+elif security find-identity -p codesigning | grep -q "Clippboard Local Signing"; then
+    IDENTITY="Clippboard Local Signing"; STAMP=
 else
-    echo "Note: no 'Paste Local Signing' identity; signing ad hoc. Run ./setup-signing.sh once."
+    echo "Note: no 'Clippboard Local Signing' identity; signing ad hoc. Run ./setup-signing.sh once."
     IDENTITY="-"; STAMP=
 fi
 # A local identity has no Team ID, so the hardened runtime would refuse to load Sparkle into the app.

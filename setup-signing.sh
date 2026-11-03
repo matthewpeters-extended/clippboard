@@ -1,9 +1,9 @@
 #!/bin/sh
-# One-time: creates a self-signed "Paste Local Signing" code-signing certificate in your login Keychain,
+# One-time: creates a self-signed "Clippboard Local Signing" code-signing certificate in your login Keychain,
 # so rebuilds keep the same signature and macOS keeps the Accessibility permission you granted.
 # Local use only; it is not a trusted or distributable identity.
 set -e
-NAME="Paste Local Signing"
+NAME="Clippboard Local Signing"
 if security find-identity -p codesigning | grep -q "$NAME"; then echo "$NAME already exists."; exit 0; fi
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 cat > "$TMP/cert.cnf" <<CNF

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds a signed, notarized dist/Paste-<version>.dmg that anyone can download and open.
+# Builds a signed, notarized dist/Clippboard-<version>.dmg that anyone can download and open.
 #
 # One-time setup (needs the paid Apple Developer Program):
 #   1. Install a "Developer ID Application" certificate in your login Keychain.
@@ -27,23 +27,23 @@ fi
 ./test.sh 2>&1 | grep -E "✘|Test run"
 SIGN_IDENTITY="$IDENTITY" ./build-app.sh
 
-APP=build/Paste.app
+APP=build/Clippboard.app
 DIST=dist
 rm -rf "$DIST" && mkdir -p "$DIST"
 codesign --verify --strict --verbose=2 "$APP"
 codesign -dv "$APP" 2>&1 | grep -q "flags=0x10000(runtime)" || { echo "Hardened runtime is not on." >&2; exit 1; }
 
 echo "Notarizing the app..."
-ditto -c -k --keepParent "$APP" "$DIST/Paste-app.zip"
-xcrun notarytool submit "$DIST/Paste-app.zip" --keychain-profile "$PROFILE" --wait
+ditto -c -k --keepParent "$APP" "$DIST/Clippboard-app.zip"
+xcrun notarytool submit "$DIST/Clippboard-app.zip" --keychain-profile "$PROFILE" --wait
 xcrun stapler staple "$APP"
-rm "$DIST/Paste-app.zip"
+rm "$DIST/Clippboard-app.zip"
 
-DMG="$DIST/Paste-$VERSION.dmg"
+DMG="$DIST/Clippboard-$VERSION.dmg"
 STAGE=$(mktemp -d); trap 'rm -rf "$STAGE"' EXIT
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "Paste" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+hdiutil create -volname "Clippboard" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
 codesign --force --timestamp --sign "$IDENTITY" "$DMG"
 
 echo "Notarizing the disk image..."
@@ -56,4 +56,4 @@ spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG
 .build/artifacts/sparkle/Sparkle/bin/generate_appcast \
     --download-url-prefix "https://github.com/matthewpeters-extended/paste/releases/download/v$VERSION/" "$DIST"
 echo "Ready: $DMG and $DIST/appcast.xml"
-echo "Publish both with:  gh release create v$VERSION $DMG $DIST/appcast.xml --title \"Paste $VERSION\""
+echo "Publish both with:  gh release create v$VERSION $DMG $DIST/appcast.xml --title \"Clippboard $VERSION\""

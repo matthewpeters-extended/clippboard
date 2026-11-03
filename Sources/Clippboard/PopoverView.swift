@@ -1,4 +1,4 @@
-import PasteCore
+import ClippboardCore
 import SwiftUI
 
 struct PopoverView: View {
@@ -13,14 +13,14 @@ struct PopoverView: View {
     private var main: some View {
         VStack(alignment: .leading, spacing: 12) {
             if !hasSeenWelcome {
-                Button("Finish setting up Paste", systemImage: "sparkles") { openWelcome() }
+                Button("Finish setting up Clippboard", systemImage: "sparkles") { openWelcome() }
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             if !permission.isGranted { PermissionNotice(permission: permission) }
             else if !listener.isRunning { ListenerProblemNotice() }
 
             HStack {
-                Text("Paste").font(.headline)
+                Text("Clippboard").font(.headline)
                 Spacer()
                 Toggle("Pause all", isOn: Bindable(model).isPaused).toggleStyle(.switch)
             }

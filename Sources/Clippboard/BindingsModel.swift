@@ -1,15 +1,15 @@
 import Foundation
 import Observation
-import PasteCore
+import ClippboardCore
 
 @MainActor
 @Observable
 final class BindingsModel {
     private var bindings: Bindings
     var loadError: String?
-    let fileURL = URL.applicationSupportDirectory.appending(path: "Paste/bindings.json")
+    let fileURL = URL.applicationSupportDirectory.appending(path: "Clippboard/bindings.json")
 
-    var all: [PasteCore.Binding] { bindings.all }
+    var all: [ClippboardCore.Binding] { bindings.all }
 
     var isPaused: Bool {
         get { bindings.isPaused }
@@ -27,11 +27,11 @@ final class BindingsModel {
 
     func text(for combo: Combo) -> String? { bindings.text(for: combo) }
 
-    func isDuplicate(_ combo: Combo, excluding id: PasteCore.Binding.ID?) -> Bool {
+    func isDuplicate(_ combo: Combo, excluding id: ClippboardCore.Binding.ID?) -> Bool {
         bindings.all.contains { $0.id != id && $0.combo == combo }
     }
 
-    func save(_ binding: PasteCore.Binding) throws {
+    func save(_ binding: ClippboardCore.Binding) throws {
         if bindings.all.contains(where: { $0.id == binding.id }) {
             try bindings.update(binding)
         } else {
@@ -39,7 +39,7 @@ final class BindingsModel {
         }
     }
 
-    func delete(_ binding: PasteCore.Binding) throws {
+    func delete(_ binding: ClippboardCore.Binding) throws {
         try bindings.remove(id: binding.id)
     }
 }

@@ -1,7 +1,7 @@
 import AppKit
 @preconcurrency import CoreGraphics
 import Observation
-import PasteCore
+import ClippboardCore
 
 /// Watches every key press. When the core says a Combo has Text, the key is swallowed and the Text typed;
 /// otherwise the key passes through untouched.

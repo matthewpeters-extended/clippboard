@@ -1,9 +1,9 @@
 import CoreGraphics
-import PasteCore
+import ClippboardCore
 
 /// Types text into the focused app as characters. Never touches the clipboard.
 enum Typer {
-    /// Marks events Paste posted itself, so the listener never reacts to them.
+    /// Marks events Clippboard posted itself, so the listener never reacts to them.
     static let marker: Int64 = 0x50415354   // "PAST"
 
     private static let returnKey: CGKeyCode = 36

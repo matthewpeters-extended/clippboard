@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct PasteApp: App {
+struct ClippboardApp: App {
     @State private var controller = AppController()
 
     var body: some Scene {
@@ -12,13 +12,13 @@ struct PasteApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("Paste Settings", id: "settings") {
+        Window("Clippboard Settings", id: "settings") {
             SettingsView(model: controller.model, permission: controller.permission, listener: controller.listener, launchAtLogin: controller.launchAtLogin, updates: controller.updates)
         }
         .windowResizability(.contentMinSize)
         .defaultLaunchBehavior(.suppressed)
 
-        Window("Welcome to Paste", id: "welcome") {
+        Window("Welcome to Clippboard", id: "welcome") {
             OnboardingView(permission: controller.permission, launchAtLogin: controller.launchAtLogin)
         }
         .windowResizability(.contentSize)

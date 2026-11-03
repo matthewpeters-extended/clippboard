@@ -1,9 +1,9 @@
-import PasteCore
+import ClippboardCore
 import SwiftUI
 
 struct BindingEditor: View {
     let model: BindingsModel
-    let original: PasteCore.Binding?
+    let original: ClippboardCore.Binding?
     let done: () -> Void
 
     @State private var label: String
@@ -11,7 +11,7 @@ struct BindingEditor: View {
     @State private var text: String
     @State private var saveError: String?
 
-    init(model: BindingsModel, original: PasteCore.Binding?, done: @escaping () -> Void) {
+    init(model: BindingsModel, original: ClippboardCore.Binding?, done: @escaping () -> Void) {
         self.model = model
         self.original = original
         self.done = done
@@ -36,7 +36,7 @@ struct BindingEditor: View {
                 Label("Another Binding already uses \(combo?.displayString ?? "this Combo").", systemImage: "xmark.octagon.fill")
                     .foregroundStyle(.red).font(.caption)
             } else if let combo, let use = combo.systemUse {
-                Label("\(combo.displayString) is normally “\(use)”. Saving overrides it in every app while Paste is on. Pause Paste to get it back.", systemImage: "exclamationmark.triangle.fill")
+                Label("\(combo.displayString) is normally “\(use)”. Saving overrides it in every app while Clippboard is on. Pause Clippboard to get it back.", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange).font(.caption)
             }
             TextField("Text to type", text: $text, axis: .vertical)
@@ -55,7 +55,7 @@ struct BindingEditor: View {
 
     private func save() {
         guard let combo else { return }
-        let binding = PasteCore.Binding(
+        let binding = ClippboardCore.Binding(
             id: original?.id ?? UUID(), label: label.trimmingCharacters(in: .whitespaces),
             combo: combo, text: text, isEnabled: original?.isEnabled ?? true)
         do {

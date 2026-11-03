@@ -33,7 +33,7 @@ public struct Combo: Hashable, Codable, Sendable {
         "a": "Select All", "b": "Bold", "c": "Copy", "f": "Find", "g": "Find Next", "h": "Hide the app",
         "i": "Italic", "m": "Minimize the window", "n": "New", "o": "Open", "p": "Print",
         "q": "Quit the app", "r": "Reload", "s": "Save", "t": "New tab", "u": "Underline",
-        "v": "Paste", "w": "Close the window", "x": "Cut", "z": "Undo", ",": "Open app settings",
+        "v": "Clippboard", "w": "Close the window", "x": "Cut", "z": "Undo", ",": "Open app settings",
         "space": "Spotlight search", "tab": "Switch apps",
     ]
 

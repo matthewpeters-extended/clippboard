@@ -1,5 +1,5 @@
 import AppKit
-import PasteCore
+import ClippboardCore
 
 /// How a key press is named as a Combo. Shared by the recorder and the listener so they always agree.
 extension Combo {

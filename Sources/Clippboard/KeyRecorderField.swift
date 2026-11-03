@@ -1,5 +1,5 @@
 import AppKit
-import PasteCore
+import ClippboardCore
 import SwiftUI
 
 /// A "press the keys you want" field. Click it to record; Escape cancels.

@@ -1,10 +1,10 @@
-# Paste: design style
+# Clippboard: design style
 
-Used by the landing site (`docs/`) and any future marketing material. The app itself follows macOS 26 conventions; this file is about how Paste presents itself.
+Used by the landing site (`docs/`) and any future marketing material. The app itself follows macOS 26 conventions; this file is about how Clippboard presents itself.
 
 ## Idea
 
-Paste is quiet, local and exact. It sits in the menu bar, does one thing, and gets out of the way. The look is **paper and ink with a single typing-caret accent**: calm and trustworthy, with one bright mark that echoes the thing the product does (text appearing at a cursor).
+Clippboard is quiet, local and exact. It sits in the menu bar, does one thing, and gets out of the way. The look is **paper and ink with a single typing-caret accent**: calm and trustworthy, with one bright mark that echoes the thing the product does (text appearing at a cursor).
 
 ## Colour
 
