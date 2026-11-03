@@ -8,6 +8,8 @@ final class BindingsModel {
     private var bindings: Bindings
     var loadError: String?
     let fileURL = URL.applicationSupportDirectory.appending(path: "Clippboard/bindings.json")
+    /// Where the app kept bindings before it was renamed from Paste.
+    let legacyFileURL = URL.applicationSupportDirectory.appending(path: "Paste/bindings.json")
 
     var all: [ClippboardCore.Binding] { bindings.all }
 
@@ -18,7 +20,7 @@ final class BindingsModel {
 
     init() {
         do {
-            bindings = try Bindings(store: FileBindingStore(url: fileURL))
+            bindings = try Bindings(store: FileBindingStore(url: fileURL, legacyURL: legacyFileURL))
         } catch {
             bindings = Bindings()
             loadError = "Couldn't read your saved Bindings, so none are shown."

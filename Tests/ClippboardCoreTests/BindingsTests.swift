@@ -59,6 +59,24 @@ import ClippboardCore
     #expect(reloaded.all == [linkedIn])
 }
 
+@Test func bindingsFromTheLegacyFileAreCopiedOverOnce() throws {
+    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: dir) }
+    let legacy = dir.appendingPathComponent("Old/bindings.json")
+    let file = dir.appendingPathComponent("New/bindings.json")
+    let combo = Combo(key: "e", modifiers: [.command, .option])
+
+    var old = try Bindings(store: FileBindingStore(url: legacy))
+    try old.add(Binding(label: "Email", combo: combo, text: "me@example.com"))
+
+    var migrated = try Bindings(store: FileBindingStore(url: file, legacyURL: legacy))
+    #expect(migrated.text(for: combo) == "me@example.com")
+
+    try migrated.remove(id: migrated.all[0].id)
+    let again = try Bindings(store: FileBindingStore(url: file, legacyURL: legacy))
+    #expect(again.text(for: combo) == nil)
+}
+
 @Test func theFileBackedStoreWritesAndReadsOneLocalFile() throws {
     let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     defer { try? FileManager.default.removeItem(at: dir) }
